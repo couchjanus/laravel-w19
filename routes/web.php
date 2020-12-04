@@ -17,11 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-// Route::resource('admin/categories', 'App\Http\Controllers\Admin\CategoryController');
-
-
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\Http\Controllers\Admin'], function() {
-    // Route::resource('admin/categories', 'App\Http\Controllers\Admin\CategoryController');
+    Route::get('', 'Dashboard')->name('home');
     Route::resource('categories', 'CategoryController');
 });
