@@ -27,89 +27,24 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\Http\Co
     Route::resource('products', 'ProductController');
 });
 
-
-Route::get('/test', function () {
-    $products = DB::table('products')
-    ->where('id', '>=', 10)
-    ->get();
-    
-    $products = DB::table('products')
-            ->where('id', '<>', 10)
-            ->get();
-    
-    $products = DB::table('products')
-            ->where('name', 'like', 'a%')
-            ->get();
-    
-    
-    $products = DB::table('products')->where([
-        ['featured', '=', '1'],
-        ['id', '>', '10'],
-    ])->get();
-
-    $products = DB::table('products')
-        ->where('id', '>', 10)
-        ->orWhere('featured', true)
-        ->get();
-
-    $products = DB::table('products')
-        ->whereBetween('id', [1, 10])->get();
-    
-    $products = DB::table('products')
-        ->whereNotBetween('id', [1, 10])
-        ->get();
-
-    $products = DB::table('products')
-        ->whereIn('id', [1, 2, 3])
-        ->get();
-
-    $products = DB::table('products')
-        ->whereNotIn('id', [1, 2, 3])
-        ->get();
-
-    $products = DB::table('products')
-        ->whereNull('updated_at')
-        ->get();
-    $products = DB::table('products')
-        ->whereNotNull('updated_at')
-        ->get();
-
-    
-    $products = DB::table('products')
-        ->whereDate('created_at', '2020-09-16')
-        ->get();
-    $products = DB::table('products')
-        ->whereMonth('created_at', '09')
-        ->get();
-    $products = DB::table('products')
-        ->whereDay('created_at', '18')
-        ->get();
-    $products = DB::table('products')
-        ->whereYear('created_at', '2020')
-        ->get();
+Route::get('/shop', [App\Http\Controllers\ShopController::class, 'index']);
+Route::get('/shop/product/{id}', [App\Http\Controllers\ShopController::class, 'show'])->name('shop.product');
+// getByBrand
+Route::get('/shop/by_brand/{id}', [App\Http\Controllers\ShopController::class, 'getByBrand'])->name('product.by.brand');
+Route::get('/shop/by_category/{id}', [App\Http\Controllers\ShopController::class, 'getByCategory'])->name('product.by.category');
 
 
-    $products = DB::table('products')
-        ->whereColumn('updated_at', '>', 'created_at')
-        ->get();
-        
-        
-    $products = \DB::table('products')
-        ->whereColumn([
-                ['price', '>', 100],
-                ['updated_at', '>', 'created_at']
-        ])->get();
-    
-    $products = DB::table('products')->orderBy('id', 'desc')->take(5)->get();
-    $products = DB::table('products')->orderBy('id', 'desc')->skip(10)->take(5)->get();
-    $products = \DB::table('products')
-        ->offset(10)
-        ->limit(5)
-        ->get();
-
-    dd($products);
-});
-
+Route::get('posts-by-featured', function () {
+    $brand = \App\Models\Brand::find(7);
+    // dump($brand);
+    // $products = $user->products;
+    // dump($products);
+    $products = $brand->products->where('featured', 1)->all();
+    foreach ($products as $product) {
+        dump($product);
+    }
+ });
+ 
 Route::get('/test1', function () {
     $result = Product::where('id', '>', 40)->take(10)->get();
     $result = Product::where([['id','>', 10],['featured', '=', 1],])->get();

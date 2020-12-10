@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\{Product, Brand, Category};
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -31,7 +31,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admin.products.create');
+        $brands = Brand::all();
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories', 'brands'));        
     }
 
     /**
@@ -42,15 +44,22 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        DB::table('products')->insert(
-            ['name' => $request->name, 'price' => $request->price, 'details' => $request->details, 'description' => $request->description]
-        );
-        
-        // Если таблица имеет поле с арибутом Auto_Increment, метод insertGetId вернет номер последней  вставленной записи:
-        // $id = DB::table('products')->insertGetId(['name' => $request->name, 'price' => $request->price, 'details' => $request->details, 'description' => $request->description]);
-    }
-
+        $product = Product::create([
+            'name'=>$request->name, 
+            'details' => $request->details, 
+            'price' => $request->price, 
+            'brand_id' => $request->brand_id, 
+            'description' => $request->description,
+            // 'image' => $this->uploadImage($request->file("cover")),
+        ]);
     
+        $category = Category::find($request->categories);
+        $product->categories()->attach($category);
+    
+        // $product->categories()->sync($request->input('categories', []));
+        return redirect()->route('admin.products.index');
+
+    }
 
     /**
      * Display the specified resource.
@@ -72,7 +81,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $brands = Brand::all();
+        $categories = Category::all();
+        return view('admin.products.edit', compact('categories', 'brands', 'product'));        
     }
 
     /**
@@ -91,6 +102,7 @@ class ProductController extends Controller
             'description'=>$request->description,
             'featured'=>($request->featured =='on')?1:0,
             ]);
+        $product->categories()->sync($request->categories);
         return redirect()->route('admin.products.index');
  
     }
@@ -103,6 +115,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $product->categories()->detach();
         $product->delete();
         return redirect()->route('admin.products.index');
     }

@@ -22,7 +22,19 @@ class Product extends Model
         'price',
         'description',
         'image',
-        'featured'
+        'featured',
+        'brand_id'
     ];
+
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
 
 }

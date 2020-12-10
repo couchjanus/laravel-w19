@@ -50,7 +50,6 @@
                     <p class="text-red-500 text-xs italic">{{ $errors->first('details') }} Please fill out this field.</p>
                 @endif
             </div>
-
             <div class="w-full md:w-1/2 px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                     <input class="mr-2 leading-tight" name="featured" type="checkbox">
@@ -60,6 +59,36 @@
                 </label>
             </div>
         </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block text-sm font-medium text-gray-700" for="brand_id">Brand</label>
+                <select name="brand_id" id="brand_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('brand_id') is-invalid @enderror">
+                    <option value="0">Select a brand</option>
+                    @foreach($brands as $brand)
+                        <option value={{ $brand->id }}>{{ $brand->name }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('brand_id'))
+                    <p class="text-red-500 text-xs italic">{{ $errors->first('brand_id') }}</p>
+                @endif
+            </div>
+
+            <div class="w-full md:w-1/2 px-3">
+                <label class="block text-sm font-medium text-gray-700" for="categories">Categories</label>
+                <select name="categories[]" id="categories" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('categories') is-invalid @enderror" multiple>
+                    <option value="0">Select acategories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('categories'))
+                    <p class="text-red-500 text-xs italic">{{ $errors->first('categories') }}</p>
+                @endif
+            </div>
+        </div>
+            
+
+
 
         <div class="md:flex md:items-center mb-6">
             <div class="md:w-1/3"></div>
