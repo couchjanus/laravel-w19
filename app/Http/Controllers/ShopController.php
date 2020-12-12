@@ -47,14 +47,24 @@ class ShopController extends Controller
      */
     public function show($id)
     {
-        $product = Product::whereId($id)->with('brand')->with('categories')->firstOrFail();
+        $product = Product::whereId($id)->with('brand')->with('categories')->with('pictures')->firstOrFail();
         return view('site.product', compact('product'));
     }
 
+    public function show($slug) {
+        if (is_numeric($slug)) {
+            $product = Product::findOrFail($slug);
+            return redirect(route('site.show', $product->slug), 301);
+        }
+ 
+        $product = Product::whereSlug($slug)->with('brand')->with('categories')->firstOrFail();
+        return view('site.show',compact('product'));
+    }
+ 
 
     public function getByBrand($id)
     {
-        $products = Product::where([['brand_id', $id]])->with('categories')->with('brand')->paginate(12);
+        $products = Product::where([['brand_id', $id]])->with('categories')->with('brand')->with('pictures')->paginate(12);
         return view('site.index', compact('products'));
     }
 

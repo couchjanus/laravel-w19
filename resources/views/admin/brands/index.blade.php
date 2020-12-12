@@ -1,11 +1,12 @@
 <x-admin.admin-layout>
     <div class="main-card">
         <div class="header">
-            Product list
-            <a class="btn-sm btn-blue" href="{{ route('admin.products.create') }}">Add New</a>
+            Btands list
+            <a class="btn-sm btn-blue" href="{{ route('admin.brands.create') }}">Add New</a>
         </div>
 
     <div class="body">
+
         <div class="w-full">
         {{ $brands->links() }}
             <table class="stripe hover bordered datatable datatable-User">
@@ -21,37 +22,31 @@
                             Name
                         </th>
                         <th>
-                            Price
-                        </th>
-                        <th>
                             &nbsp;
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($products as $key => $product)
-                        <tr data-entry-id="{{ $product->id }}">
+                    @foreach($brands as $key => $brand)
+                        <tr data-entry-id="{{ $brand->id }}">
                             <td>
 
                             </td>
                             <td>
-                                {{ $product->id ?? '' }}
+                                {{ $brand->id ?? '' }}
                             </td>
                             <td>
-                                {{ $product->name ?? '' }}
+                                {{ $brand->name ?? '' }}
                             </td>
                             <td>
-                                {{ $product->price ?? '' }}
-                            </td>
-                            <td>
-                                <a class="btn-sm btn-indigo" href="{{ route('admin.products.show', $product->id) }}">
+                                <a class="btn-sm btn-indigo" href="{{ route('admin.brands.show', $brand->id) }}">
                                         view
                                 </a>
  
-                                <a class="btn-sm btn-blue" href="{{ route('admin.products.edit', $product->id) }}">
+                                <a class="btn-sm btn-blue" href="{{ route('admin.brands.edit', $brand->id) }}">
                                         edit
                                 </a>
-                                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Are You Sure');" style="display: inline-block;">
+                                <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" onsubmit="return confirm('Are You Sure');" style="display: inline-block;">
                                     @method("DELETE")
                                     @csrf
                                     <input type="submit" class="btn-sm btn-red" value="delete">
@@ -62,7 +57,7 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $brands->links() }}
+        {{ $brands->links() }}
         </div>
     </div>
 </div>

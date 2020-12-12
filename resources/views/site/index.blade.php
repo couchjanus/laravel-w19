@@ -18,7 +18,7 @@
                             
                         </div>
                         <div class="prod-img">
-                            <img src="{{ $product->image }}"
+                            <img src="{{ $product->pictures[0]->filename ?? null}}"
                                 class="w-full object-cover object-center" />
                         </div>
                         <div class="prod-info grid gap-10">

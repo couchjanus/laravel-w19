@@ -37,4 +37,10 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
+    public function pictures()
+    {
+        return $this->belongsToMany(Picture::class);
+    }
+
+
 }

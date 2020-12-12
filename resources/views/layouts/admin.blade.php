@@ -19,21 +19,20 @@
         </header>
 
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+            
             <div class="mx-auto px-6 py-8">
-                    @if(session('message'))
-                        <div class="alert success">
-                            {{ session('message') }}
-                        </div>
-                    @endif
-                    @if($errors->count() > 0)
-                        <div class="alert danger">
-                            <ul class="list-none">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                @if(session('message'))
+                    <x-flash-success :message="session('message')" />
+                @endif
+
+                @if($errors->count() > 0)
+                    <ul class="list-unstyled">
+                        @foreach($errors->all() as $error)
+                            <li><x-flash-error :message="$error" /></li>
+                        @endforeach
+                    </ul>
+                @endif
+                        
                 {{ $slot }}
 
             </div>

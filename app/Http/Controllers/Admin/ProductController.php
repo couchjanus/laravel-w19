@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Product, Brand, Category};
+use App\Models\{Product, Brand, Category, Picture};
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Image;
 
 class ProductController extends Controller
 {
@@ -15,13 +18,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::paginate();
         return view('admin.products.index', ['products' => $products]);
-
-        // $products = Product::where('featured', 1)
-        //       ->orderBy('id', 'desc')
-        //       ->take(10)
-        //       ->get();
     }
 
     /**
@@ -44,21 +42,45 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = Product::create([
-            'name'=>$request->name, 
-            'details' => $request->details, 
-            'price' => $request->price, 
-            'brand_id' => $request->brand_id, 
-            'description' => $request->description,
-            // 'image' => $this->uploadImage($request->file("cover")),
-        ]);
-    
+        //  $product = Product::create([
+        //     'name'=>$request->name, 
+        //     'details' => $request->details, 
+        //     'price' => $request->price, 
+        //     'brand_id' => $request->brand_id, 
+        //     'description' => $request->description,
+        // ]);
+        $product = Product::create($request->all());
         $category = Category::find($request->categories);
         $product->categories()->attach($category);
-    
-        // $product->categories()->sync($request->input('categories', []));
-        return redirect()->route('admin.products.index');
 
+        foreach ($request->images as $file) {
+            $filename = $this->uploadImage($file);
+            $picture = Picture::create([
+                'filename'=>$filename, 
+            ]);
+            $product->pictures()->attach($picture->id);
+        }
+        
+        return redirect()->route('admin.products.index')->withMessage('Product created successfully');
+    }
+
+    private function uploadCover(UploadedFile $file) : string
+    {
+        $filename = md5($file->getClientOriginalName() . time()).uniqid('', true);
+        $file->storeAs("public/covers", $filename);
+        return asset("storage/covers/". $filename);
+    }
+
+    public function uploadImage(UploadedFile $file) : string
+    {
+        $img = Image::make($file);
+        $filename = md5($file->getClientOriginalName() . time()).uniqid('', true);
+        $originalPath = 'app/public/products';
+
+        $img->resize(520, 250, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save(storage_path($originalPath)."/".$filename);
+        return asset("storage/products/". $filename;
     }
 
     /**
@@ -70,7 +92,6 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         return view('admin.products.show', compact('product'));
-
     }
 
     /**
@@ -95,17 +116,37 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $product->update([
-            'name'=>$request->name,
-            'details'=>$request->details,
-            'price'=>$request->price,
-            'description'=>$request->description,
-            'featured'=>($request->featured =='on')?1:0,
-            ]);
-        $product->categories()->sync($request->categories);
-        return redirect()->route('admin.products.index');
+        // $product->update([
+        //     'name'=>$request->name,
+        //     'details'=>$request->details,
+        //     'price'=>$request->price,
+        //     'description'=>$request->description,
+        //     'featured'=>($request->featured =='on')?1:0,
+        //     ]);
+        // $product->categories()->sync($request->categories);
  
-    }
+        $product->update($request->all());
+
+        if($request->images) {
+            $ids = $request->images;
+            foreach ($ids as $id) {
+                $picture = Picture::where('id', $id)->first();
+                $filename = parse_url($picture->filename, PHP_URL_PATH);
+                Storage::delete("public/products/" . $filename);
+                $product->pictures()->detach($id);
+                $picture->delete();
+            }
+            foreach ($request->images as $file) {
+                $filename = $this->uploadImage($file);
+                $picture = Picture::create([
+                    'filename'=>$filename, 
+                ]);
+                $product->pictures()->attach($picture->id);
+            }
+        }
+        $product->categories()->sync($request->categories);
+        return redirect()->route('admin.products.index')->withMessage('Product updated successfully');
+     }
 
     /**
      * Remove the specified resource from storage.
@@ -116,6 +157,16 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->categories()->detach();
+        $ids = \DB::table('picture_product')
+            ->where('product_id', $product->id)->get();
+        
+        foreach ($ids as $id) {
+            $picture = Picture::where('id', $id)->first();
+            $filename = parse_url($picture->filename, PHP_URL_PATH);
+            Storage::delete("public/products/" . $filename);
+            $product->pictures()->detach($id);
+            $picture->delete();
+        }
         $product->delete();
         return redirect()->route('admin.products.index');
     }
@@ -146,5 +197,4 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index');
     }
 
- 
 }

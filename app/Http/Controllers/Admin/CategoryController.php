@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
@@ -15,7 +17,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = \DB::select('select * from categories');
+        $categories = Category::paginate();
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -37,10 +39,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        \DB::insert("INSERT INTO categories (name, description) values (?, ?)", [$request->name, $request->description]);     
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:categories|max:191|min:3',
+            'description' => 'nullable|string',
+        ])->validate();
+        
+        Category::create($request->all());
         return redirect(route('admin.categories.index'));
     }
-
     
     /**
      * Display the specified resource.
@@ -60,9 +66,8 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        $category = \DB::select("SELECT * from categories WHERE id = ?", [$id])[0];
         return view('admin.categories.edit', compact('category'));
     }
 
@@ -73,16 +78,18 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
-        \DB::update("UPDATE categories SET name=?, description=?, updated_at=?
-        where id = ?", [
-           $request['name'],
-           $request['description'],
-           Carbon::now('Europe/Kiev'),
-           $id
-       ]);
-       return redirect(route('admin.categories.index'));
+       $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:categories|max:191|min:3',
+            'description' => 'nullable|string',
+        ]);
+        // Переданные данные не прошли проверку
+        if ($validator->fails()) {
+            return redirect('admin/categories/edit')->withErrors($validator)->withInput();
+        }
+        $category->update($request->all());
+        return redirect(route('admin.categories.index'));
     }
 
     /**

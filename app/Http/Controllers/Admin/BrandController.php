@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
+use App\Models\{Brand, Pictire};
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 
 class BrandController extends Controller
 {
@@ -15,7 +16,8 @@ class BrandController extends Controller
      */
     public function index()
     {
-        //
+        $brands = Brand::paginate();
+        return view('admin.brands.index', compact('brands'));
     }
 
     /**
@@ -25,7 +27,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.brands.create');
     }
 
     /**
@@ -36,7 +38,31 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name'     =>  'required|max:191',
+            'logo'     =>  'mimes:jpg,jpeg,png|max:1000'
+        ]);
+
+        $params = $request->except('_token');
+        $collection = collect($params);
+        $logo = $this->uploadLogo($request->file("logo"));
+        $merge = $collection->merge(compact('logo'));
+        $brand = new Brand($merge->all());
+        $brand->save();
+
+        // $brand->Brand::create($params);
+
+        if (!$brand) {
+            return back()->withInput();
+        }
+        return redirect()->route('admin.brands.index');
+    }
+
+    private function uploadLogo(UploadedFile $file) : string
+    {
+        $filename = md5($file->getClientOriginalName() . time()).uniqid('', true);
+        $file->storeAs("public/brands", $filename);
+        return asset("storage/btands/". $filename);
     }
 
     /**
@@ -47,7 +73,7 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
-        //
+        return view('admin.brands.show', compact('brand'));
     }
 
     /**
@@ -58,7 +84,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        //
+        return view('admin.brands.edit', compact('brand'));
     }
 
     /**
