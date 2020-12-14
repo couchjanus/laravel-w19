@@ -32,6 +32,7 @@
                         @endforeach
                     </ul>
                 @endif
+                
                         
                 {{ $slot }}
 

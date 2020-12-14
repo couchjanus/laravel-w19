@@ -9,15 +9,16 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
             <div class="flex flex-col md:flex-row -mx-4">
-                <div class="md:flex-1 px-4" x-data="{pictures: {{ $product->pictures }}}">
+                <div class="md:flex-1 px-4">
                     <div x-data="{ image: 1 }" x-cloak>
                         <div class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4">
-
-                            <template x-for="i in 4">
-                                <div x-show="image === i" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
-                                    <img src="{{ $product->pictures[1]->filename }}" class="object-cover h-64 w-full">
+                            @for ($pic =1; $pic<count($product->pictures);  $pic++) 
+                            {{-- <template x-show="image === {{ $pic }}" x-data="i: {{ $pic }}"> --}}
+                                <div x-show="image === {{ $pic }}" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
+                                    <img src="{{ $product->pictures[$pic]->filename }}" class="object-cover h-64 w-full">
                                 </div>
-                            </template>
+                            {{-- </template> --}}
+                            @endfor
                             
                             {{-- <div x-show="image === 1" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
                                 <img src="{{ $product->pictures[0]->filename ?? null }}" class="object-cover h-64 w-full">
@@ -37,7 +38,7 @@
                         </div>
 
                         <div class="flex -mx-2 mb-4">
-                            <template x-for="i in 4">
+                            <template x-for="i in {{count($product->pictures) }}">
                             <div class="flex-1 px-2">
                                 <button x-on:click="image = i" :class="{ 'ring-2 ring-indigo-300 ring-inset': image === i }" class="focus:outline-none w-full rounded-lg h-12 md:h-12 bg-gray-100 flex items-center justify-center">
                                 <span x-text="i" class="text-2xl"></span>

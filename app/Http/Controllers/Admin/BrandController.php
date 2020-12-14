@@ -45,8 +45,13 @@ class BrandController extends Controller
 
         $params = $request->except('_token');
         $collection = collect($params);
-        $logo = $this->uploadLogo($request->file("logo"));
-        $merge = $collection->merge(compact('logo'));
+        $merge = $collection;
+
+        if($request->logo) {
+            $collection = collect($params);
+            $logo = $this->uploadLogo($request->file("logo"));
+            $merge = $collection->merge(compact('logo'));
+        }
         $brand = new Brand($merge->all());
         $brand->save();
 

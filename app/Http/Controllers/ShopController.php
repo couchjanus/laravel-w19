@@ -51,7 +51,7 @@ class ShopController extends Controller
         return view('site.product', compact('product'));
     }
 
-    public function show($slug) {
+    public function show1($slug) {
         if (is_numeric($slug)) {
             $product = Product::findOrFail($slug);
             return redirect(route('site.show', $product->slug), 301);

@@ -45,7 +45,7 @@ class CategoryController extends Controller
         ])->validate();
         
         Category::create($request->all());
-        return redirect(route('admin.categories.index'));
+        return redirect(route('admin.categories.index'))->withMessage('Category created successfully');;
     }
     
     /**

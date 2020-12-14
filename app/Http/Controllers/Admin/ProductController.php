@@ -80,7 +80,7 @@ class ProductController extends Controller
         $img->resize(520, 250, function ($constraint) {
             $constraint->aspectRatio();
         })->save(storage_path($originalPath)."/".$filename);
-        return asset("storage/products/". $filename;
+        return asset("storage/products/". $filename);
     }
 
     /**
