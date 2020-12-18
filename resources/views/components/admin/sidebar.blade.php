@@ -1,4 +1,4 @@
-<div id="sidebar-disable" class="sidebar-disable hidden"></div>
+{{-- <div id="sidebar-disable" class="sidebar-disable hidden"></div> --}}
 
 <div id="sidebar" class="sidebar-menu transform -translate-x-full ease-in">
     <div class="flex items-center justify-center mt-4">

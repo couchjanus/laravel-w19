@@ -1,48 +1,63 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@extends('layouts.master')
-@section('styles')
-    @include('layouts.partials.admin._styles')
-@endsection
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-@section('body')
-<div class="flex h-screen bg-gray-200">
-    <x-admin.sidebar></x-admin.sidebar>
-    <div class="flex-1 flex flex-col overflow-hidden">
-        <header class="main-header">
-                <div class="flex items-center">
-                    <button id="sidebar-enable" class="sidebar-enable">
-                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css'>
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+
+        @livewireStyles
+
+        <!-- Scripts -->
+        <script src="{{ mix('js/app.js') }}" defer></script>
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
+            @livewire('admin-nav')
+
+            <div class="grid grid-cols-6 gap-4">
+                <div class="col">
+                    <x-admin-sidebar></x-admin-sidebar>
                 </div>
-        </header>
+                <div class="col-span-5">
 
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-            
-            <div class="mx-auto px-6 py-8">
-                @if(session('message'))
-                    <x-flash-success :message="session('message')" />
-                @endif
+                    @if(session('message'))
+                        <x-flash-success :message="session('message')" />
+                    @endif
 
-                @if($errors->count() > 0)
-                    <ul class="list-unstyled">
-                        @foreach($errors->all() as $error)
-                            <li><x-flash-error :message="$error" /></li>
-                        @endforeach
-                    </ul>
-                @endif
-                
-                        
-                {{ $slot }}
+                    @if($errors->count() > 0)
+                        <ul class="list-unstyled">
+                            @foreach($errors->all() as $error)
+                                <li><x-flash-error :message="$error" /></li>
+                            @endforeach
+                        </ul>
+                    @endif
+                    <!-- Page Heading -->
+                    <header class="bg-white shadow">
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
 
+                    <!-- Page Content -->
+                    <main>
+                        {{ $slot }}
+                    </main>    
+                </div>
             </div>
-        </main>
-        
-        </div>
-    </div>
-@endsection
 
-@push('scripts')
-    @include('layouts.partials.admin._scripts')
-@endpush
+        </div>
+
+        @stack('modals')
+
+        @livewireScripts
+    </body>
+</html>

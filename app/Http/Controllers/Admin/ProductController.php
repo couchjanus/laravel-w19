@@ -18,8 +18,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate();
-        return view('admin.products.index', ['products' => $products]);
+        // $products = Product::paginate();
+        // return view('admin.products.index', ['products' => $products]);
+        return view('admin.products.index');
     }
 
     /**
@@ -31,8 +32,12 @@ class ProductController extends Controller
     {
         $brands = Brand::all();
         $categories = Category::all();
-        return view('admin.products.create', compact('categories', 'brands'));        
+        return view('admin.products.create', compact('categories', 'brands'));
+        // return view('admin.products.create');
+
+
     }
+
 
     /**
      * Store a newly created resource in storage.

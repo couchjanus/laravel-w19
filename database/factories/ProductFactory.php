@@ -25,7 +25,7 @@ class ProductFactory extends Factory
         $name = $this->faker->sentence();
         return [
             'name' => $name,
-            'slug' => SlugService::createSlug(Product::class, 'slug', $name),
+            // 'slug' => SlugService::createSlug(Product::class, 'slug', $name),
             'details' => $this->faker->sentence(),
             'brand_id' => $this->faker->randomElement($brands),
             'price' => $this->faker->numberBetween(19,499),

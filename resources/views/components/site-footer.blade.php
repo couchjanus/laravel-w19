@@ -76,7 +76,7 @@
         <span class="ml-3 text-xl">tailblocks</span>
       </a>
       <p class="text-sm text-gray-500 sm:ml-6 sm:mt-0 mt-4">© 2020 tailblocks —
-        <a href="https://twitter.com/knyttneve" rel="noopener noreferrer" class="text-gray-600 ml-1" target="_blank">@knyttneve</a>
+        <a href="https://twitter.com/chouchjanus" rel="noopener noreferrer" class="text-gray-600 ml-1" target="_blank">@couchjanus</a>
       </p>
       <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
         <a class="text-gray-500">

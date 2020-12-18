@@ -1,7 +1,4 @@
 <x-site-layout>
-
-    <x-site-navigation></x-site-navigation>
-
     <div class="py-6">
         <!-- Breadcrumbs -->
         <x-site-breadcrumbs></x-site-breadcrumbs>
@@ -63,5 +60,5 @@
             {{ $products->links() }} 
         </div>
     </div>
-<x-site-footer></x-site-footer>
+
 </x-site-layout>
