@@ -56,12 +56,14 @@
                                 <a href="{{ route('admin.users.edit', $user->id) }}">
                                     <button type="submit" class="text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-1" value="delete">edit</button>
                                 </a>
+                                @can('user_delete')
                                 <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are You Sure');" style="display: inline-block;">
                                     @method("DELETE")
                                     @csrf
                                     
                                     <button type="submit" class="text-white bg-red-500 hover:bg-red-700 px-1" value="delete">delete</button>
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach

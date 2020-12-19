@@ -27,18 +27,22 @@
             <button @click="open=true" class="cursor-pointer px-5 py-3 text-white text-center inline-block hover:opacity-75 hover:shadow hover:-mb-3 rounded-t">
                 <i class="fa-fw fas fa-users"></i><span class="mx-4">User Management</span><i class="fa fa-caret-down ml-auto" x-bind:class="{ 'fa-caret-up': open !== false }" aria-hidden="true"></i></button>
             <ul x-show="open" @click.away="open=false">
-                <li class="border w-11/12">
-                    <a class="nav-link{{ request()->is('admin/permissions*') ? ' active' : '' }}" href="#">
-                    <i class="fa-fw fas fa-unlock-alt"></i>
-                    <span class="mx-4">Permission</span>
-                    </a>
-                </li>
-                <li class="border w-11/12">
-                    <a class="nav-link{{ request()->is('admin/roles*') ? ' active' : '' }}" href="#">
-                        <i class="fa-fw fas fa-briefcase"></i>
-                        <span class="mx-4">Roles</span>
-                    </a>
-                </li>
+                @can('permission_access')
+                    <li class="border w-11/12">
+                        <a class="nav-link{{ request()->is('admin/permissions*') ? ' active' : '' }}" href="#">
+                        <i class="fa-fw fas fa-unlock-alt"></i>
+                        <span class="mx-4">Permission</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('role_access')
+                    <li class="border w-11/12">
+                        <a class="nav-link{{ request()->is('admin/roles*') ? ' active' : '' }}" href="#">
+                            <i class="fa-fw fas fa-briefcase"></i>
+                            <span class="mx-4">Roles</span>
+                        </a>
+                    </li>
+                @endcan
                 <li class="border w-11/12">
                     <a class="nav-link{{ request()->is('admin/users*') ? ' active' : '' }}" href="/admin/users">
                         <i class="fa-fw fas fa-user"></i>
