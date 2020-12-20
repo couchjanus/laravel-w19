@@ -29,7 +29,7 @@
             <ul x-show="open" @click.away="open=false">
                 @can('permission_access')
                     <li class="border w-11/12">
-                        <a class="nav-link{{ request()->is('admin/permissions*') ? ' active' : '' }}" href="#">
+                        <a class="nav-link{{ request()->is('admin/permissions*') ? ' active' : '' }}" href="/admin/permissions">
                         <i class="fa-fw fas fa-unlock-alt"></i>
                         <span class="mx-4">Permission</span>
                         </a>
@@ -37,7 +37,7 @@
                 @endcan
                 @can('role_access')
                     <li class="border w-11/12">
-                        <a class="nav-link{{ request()->is('admin/roles*') ? ' active' : '' }}" href="#">
+                        <a class="nav-link{{ request()->is('admin/roles*') ? ' active' : '' }}" href="/admin/roles">
                             <i class="fa-fw fas fa-briefcase"></i>
                             <span class="mx-4">Roles</span>
                         </a>

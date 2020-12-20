@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class StorePermissionRequest extends FormRequest
 {
@@ -13,7 +15,9 @@ class StorePermissionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        abort_if(Gate::denies('permission_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        return true;
     }
 
     /**
@@ -24,7 +28,9 @@ class StorePermissionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => [
+                'required',
+            ],
         ];
     }
 }

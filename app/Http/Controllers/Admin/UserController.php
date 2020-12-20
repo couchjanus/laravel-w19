@@ -3,11 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Actions\Fortify\PasswordValidationRules;
+
+use Carbon\Carbon;
+use App\Models\{User, Profile, Role};
+use Gate;
+
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\{StoreUserRequest, UpdateUserRequest};
 
 class UserController extends Controller
 {
@@ -20,6 +27,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('admin.users.index');
     }
 
@@ -30,7 +38,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $roles = Role::all()->pluck('title', 'id');
+
+        return view('admin.users.create', compact('roles'));
     }
 
     /**
@@ -52,7 +63,7 @@ class UserController extends Controller
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
         ]);
-        
+        $user->roles()->sync($request->input('roles', []));
         return redirect()->route('admin.users.index')->withMessage("User created successfully");
     }
 
@@ -75,7 +86,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $roles = Role::all()->pluck('title', 'id');
+        $user->load('roles');
+        return view('admin.users.edit', compact('roles', 'user'));
     }
 
     /**
@@ -87,7 +101,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user->update($request->all());
+        $user->roles()->sync($request->input('roles', []));
+        return redirect()->route('admin.users.index')->withSuccess('User Updated successfully');
     }
 
     /**
@@ -98,6 +114,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $user->delete();
+
+        return back();
     }
 }

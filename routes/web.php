@@ -18,6 +18,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\Http\Co
     Route::resource('products', 'ProductController');
     Route::resource('brands', 'BrandController');
     Route::resource('users', 'UserController');
+    Route::resource('permissions', 'PermissionController');
+    Route::resource('roles', 'RoleController');
 });
 
 Route::get('/shop', [App\Http\Controllers\ShopController::class, 'index'])->name('shop.index');
@@ -65,5 +67,9 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
  
- 
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
          
