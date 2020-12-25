@@ -59,7 +59,7 @@ class ProductController extends Controller
         $product->categories()->attach($category);
 
         foreach ($request->images as $file) {
-            $filename = $this->uploadImage($file);
+            $filename = $this->uploadCover($file);
             $picture = Picture::create([
                 'filename'=>$filename, 
             ]);

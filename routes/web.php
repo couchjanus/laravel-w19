@@ -7,8 +7,8 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
-
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\Http\Controllers\Admin', 'middleware' => ['auth', 'admin']], function() {
+// Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\Http\Controllers\Admin', 'middleware' => ['auth', 'admin']], function() {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\Http\Controllers\Admin', ], function() {
     Route::get('', 'Dashboard')->name('home');
     Route::resource('categories', 'CategoryController');
     Route::get('products/trashed', 'ProductController@trashed')->name('products.trashed');
@@ -27,21 +27,33 @@ Route::get('/shop/product/{id}', [App\Http\Controllers\ShopController::class, 's
 Route::get('/shop/by_brand/{id}', [App\Http\Controllers\ShopController::class, 'getByBrand'])->name('product.by.brand');
 Route::get('/shop/by_category/{id}', [App\Http\Controllers\ShopController::class, 'getByCategory'])->name('product.by.category');
 
+Route::post('/product/add/cart', [App\Http\Controllers\ShopController::class, 'addToCart'])->name('product.add.cart');
 
-// Route::get('/users', UsersTable::class);
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'getCart'])->name('checkout.cart');
+Route::get('/cart/item/{id}/remove', [App\Http\Controllers\CartController::class, 'removeItem'])->name('checkout.cart.remove');
+Route::get('/cart/clear', [App\Http\Controllers\CartController::class, 'clearCart'])->name('checkout.cart.clear');
+
+
+// Route::group(['middleware' => ['auth']], function () {
+    Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'getCheckout'])->name('checkout.index');
+    Route::post('/checkout/order', [App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.place.order');
+    Route::get('checkout/payment/complete', [App\Http\Controllers\CheckoutController::class, 'complete'])->name('checkout.payment.complete');
+
+    // Route::get('account/orders', [App\Http\Controllers\AccountController::class, 'getOrders'])->name('account.orders');
+// });
+
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+
 
 Route::get('/test', function () {   
     Log::info('A user has arrived at the welcome page.');
     return '<h1>Welcome back User</h1>';
 });
 
-Route::get('reminder', function () {
-    return new \App\Mail\Reminder();
-})->name('reminder');
 
 Route::get('remind', function () {
     return new \App\Mail\Reminder('Blahuoooo!');
@@ -50,13 +62,6 @@ Route::get('remind', function () {
 Route::get('/contact', 'App\Http\Controllers\ContactController@index')->name('contact');
 
 
-Route::post('rem', function (\Illuminate\Http\Request $request) {dd($request);})->name('reminder');
-
-Route::post('rem', function (
-   \Illuminate\Http\Request $request,
-   \Illuminate\Mail\Mailer $mailer) {
-          $mailer->to($request->email)->send(new \App\Mail\Reminder($request->event));
-          return redirect()->back();})->name('reminder');
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

@@ -21,6 +21,17 @@
     <body>
         <div class="font-sans text-gray-900 antialiased">
             <x-site-navigation></x-site-navigation>
+                @if(session('message'))
+                        <x-flash-success :message="session('message')" />
+                @endif
+
+                @if($errors->count() > 0)
+                        <ul class="list-unstyled">
+                            @foreach($errors->all() as $error)
+                                <li><x-flash-error :message="$error" /></li>
+                            @endforeach
+                        </ul>
+                @endif
             {{ $slot }}
             <x-site-footer></x-site-footer>
         </div>

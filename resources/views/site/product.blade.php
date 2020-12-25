@@ -1,7 +1,4 @@
 <x-site-layout>
-
-    <x-site-navigation></x-site-navigation>
-
     <div class="py-6">
         <!-- Breadcrumbs -->
         <x-site-breadcrumbs></x-site-breadcrumbs>
@@ -10,37 +7,23 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
             <div class="flex flex-col md:flex-row -mx-4">
                 <div class="md:flex-1 px-4">
-                    <div x-data="{ image: 1 }" x-cloak>
+                    <div x-data="{ image: 0 }" x-cloak>
                         <div class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4">
-                            @for ($pic =1; $pic<count($product->pictures);  $pic++) 
-                            {{-- <template x-show="image === {{ $pic }}" x-data="i: {{ $pic }}"> --}}
+                            @for ($pic =0; $pic<count($product->pictures);  $pic++) 
+                            
                                 <div x-show="image === {{ $pic }}" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
                                     <img src="{{ $product->pictures[$pic]->filename }}" class="object-cover h-64 w-full">
                                 </div>
-                            {{-- </template> --}}
+                   
                             @endfor
                             
-                            {{-- <div x-show="image === 1" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
-                                <img src="{{ $product->pictures[0]->filename ?? null }}" class="object-cover h-64 w-full">
-                            </div>
-
-                            <div x-show="image === 2" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
-                             <img src="{{ $product->pictures[1]->filename ?? null }}" class="object-cover h-64 w-full">
-                            </div>
-
-                            <div x-show="image === 3" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
-                             <img src="{{ $product->pictures[2]->filename ?? null }}" class="object-cover h-64 w-full">
-                            </div>
-
-                            <div x-show="image === 4" class="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
-                             <img src="{{ $product->pictures[3]->filename ?? null }}" class="object-cover h-64 w-full">
-                            </div> --}}
+                            
                         </div>
 
                         <div class="flex -mx-2 mb-4">
                             <template x-for="i in {{count($product->pictures) }}">
                             <div class="flex-1 px-2">
-                                <button x-on:click="image = i" :class="{ 'ring-2 ring-indigo-300 ring-inset': image === i }" class="focus:outline-none w-full rounded-lg h-12 md:h-12 bg-gray-100 flex items-center justify-center">
+                                <button x-on:click="image = i-1" :class="{ 'ring-2 ring-indigo-300 ring-inset': image === i-1 }" class="focus:outline-none w-full rounded-lg h-12 md:h-12 bg-gray-100 flex items-center justify-center">
                                 <span x-text="i" class="text-2xl"></span>
                                 </button>
                             </div>
@@ -49,6 +32,10 @@
                     </div>
                 </div>
 
+                <form action="{{ route('product.add.cart') }}" method="POST" role="form" id="addToCart">
+                @csrf
+                <input type="hidden" name="productId" value="{{ $product->id }}">
+                <input type="hidden" name="price" id="finalPrice" value="{{ $product->price }}">
                 <div class="md:flex-1 px-4">
                     <h2 class="mb-2 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">{{ $product->name }}</h2>
                     <p class="text-gray-500 text-sm">By <a href="#" class="text-indigo-600 hover:underline">{{ $product->brand->name }}</a></p>
@@ -71,7 +58,7 @@
                     <div class="flex py-4 space-x-4">
                         <div class="relative">
                             <div class="text-center left-0 pt-2 right-0 absolute block text-xs uppercase text-gray-400 tracking-wide font-semibold">Qty</div>
-                            <select class="cursor-pointer appearance-none rounded-xl border border-gray-200 pl-4 pr-8 h-14 flex items-end pb-1">
+                            <select class="cursor-pointer appearance-none rounded-xl border border-gray-200 pl-4 pr-8 h-14 flex items-end pb-1" name="qty">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -84,14 +71,14 @@
                             </svg>
                         </div>
 
-                        <button type="button" class="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white">
+                        <button type="submit" class="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white">
                             Add to Cart
                         </button>
                     </div>
                 </div>
+                </form>
             </div>
         </div>
 
     </div>
-<x-site-footer></x-site-footer>
 </x-site-layout>
