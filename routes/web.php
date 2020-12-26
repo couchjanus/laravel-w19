@@ -39,7 +39,6 @@ Route::get('/cart/clear', [App\Http\Controllers\CartController::class, 'clearCar
     Route::post('/checkout/order', [App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.place.order');
     Route::get('checkout/payment/complete', [App\Http\Controllers\CheckoutController::class, 'complete'])->name('checkout.payment.complete');
 
-    // Route::get('account/orders', [App\Http\Controllers\AccountController::class, 'getOrders'])->name('account.orders');
 // });
 
 
